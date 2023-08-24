@@ -1,3 +1,5 @@
+// responsável por exibir e gerenciar os modelos de treinamento salvos
+
 import * as moment from 'moment';
 import React, { Component } from 'react';
 import { ConfigContainer } from '../../styles/ConfigContainer';
@@ -22,6 +24,7 @@ import CodeIcon from 'react-feather/dist/icons/terminal';
 import TrashIcon from 'react-feather/dist/icons/trash';
 import { primaryColor } from '../../styles/global';
 import { PRE_PROCESSING_RAW, TRAIN_PIPELINES } from '../../constants';
+// O componente AlertDialog é usado para exibir um diálogo de confirmação ao excluir um modelo. Ele é renderizado ao final do componente.
 import AlertDialog from '../../components/AlertDialog';
 import { ProgressSpinner } from 'primereact/progressspinner';
 
@@ -30,16 +33,20 @@ class TrainModel extends Component {
   constructor(props) {
     super(props);
 
+    //  O estado inicial do componente inclui as propriedades itemSelected (para manter o item de modelo selecionado) e anchorEl (para controlar o menu de ações).
     this.state = {
       itemSelected: null,
       anchorEl: null
     };
   }
 
+
+  // Ciclo de Vida: O método componentDidMount() é usado para chamar a ação getTrainModel() assim que o componente é montado.
   componentDidMount() {
     this.props.getTrainModel();
   }
 
+  // definido para renderizar um item de modelo na tabela. Ele exibe várias informações, incluindo nome, descrição, data de criação, acurácia de teste, etc. Também inclui um ícone de menu que será usado para acionar as ações do modelo.
   renderItem = (item, idx) => (
     <tr key={idx}>
       <FirstItemColumn>{item.name}</FirstItemColumn>
@@ -56,6 +63,7 @@ class TrainModel extends Component {
 
   handleMenuItemClose = () => this.setState({ anchorEl: null });
 
+
   handleClickMenu = (item, event) => {
     this.setState({ anchorEl: event.currentTarget, itemSelected: item });
   };
@@ -66,6 +74,7 @@ class TrainModel extends Component {
     this.props.deleteTrainModel(itemSelected.model_id);
   }
 
+  // definido para renderizar o menu de ações que aparecerá quando o ícone do menu for clicado. Ele inclui várias opções, como baixar dados do modelo, baixar código do modelo, copiar URL do modelo, gerar nova chave de API e excluir modelo.
   renderMenuActions = () => {
     let actions = [
       {
@@ -128,6 +137,7 @@ class TrainModel extends Component {
     });
   }
 
+  // Manipulação de Ações do Menu: Os métodos handleMenuItemClick() e deleteModel() são definidos para lidar com as ações do menu. Dependendo da ação selecionada, várias ações Redux são chamadas para executar as operações necessárias.
   handleMenuItemClick = (option, event) => {
     const { model_id } = this.state.itemSelected;
 
@@ -156,9 +166,12 @@ class TrainModel extends Component {
     this.handleMenuItemClose();
   };
 
+  
+  // o componente é renderizado. Ele inclui uma barra de rolagem perfeita (PerfectScrollbar) e o conteúdo do componente, que consiste na tabela de modelos.
   render() {
     const { data, loading } = this.props.train_model;
 
+    // A renderização condicional é usada para exibir mensagens de status, indicadores de carregamento, tabela de modelos ou o menu de ações, dependendo do estado atual.
     return (
       <PerfectScrollbar style={{ width: '100%', overflowX: 'auto' }}>
         <ConfigContainer size='big' style={{ color: '#000' }}>
@@ -206,6 +219,7 @@ class TrainModel extends Component {
   }
 }
 
+// O componente é conectado ao Redux usando a função connect. O mapStateToProps é usado para mapear o estado train_model do Redux para as propriedades do componente, permitindo que ele acesse o valor de data e loading. Também são mapeadas várias ações Redux para as propriedades do componente.
 const mapStateToProps = ({ train_model }) => ({ train_model });
 
 export default connect(mapStateToProps,
@@ -215,3 +229,5 @@ export default connect(mapStateToProps,
     ...DialogActions
   })
   (TrainModel);
+
+  // O componente TrainModel é usado para exibir e gerenciar os modelos de treinamento salvos. Ele permite ao usuário visualizar informações sobre os modelos, executar ações como baixar dados, gerar chaves de API, etc., e também oferece um menu de ações para realizar tarefas específicas. O Redux é usado para gerenciar o estado e as ações relacionadas a esse componente.

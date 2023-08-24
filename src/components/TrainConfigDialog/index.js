@@ -1,3 +1,5 @@
+// parte do aplicativo relacionada à configuração dos parâmetros de treinamento de modelos de machine learning.
+
 import React, { Component } from 'react';
 import {
   DialogForm, DialogFormButtonContainer, DialogSpan
@@ -7,10 +9,12 @@ import { connect } from 'react-redux';
 import Dialog from '../Dialog';
 import Button from '../../styles/Button';
 import { actions as toastrActions } from 'react-redux-toastr';
+// utiliza a biblioteca react-currency-input para formatar e gerenciar os campos de entrada numérica. Isso facilita a entrada de percentuais e valores inteiros.
 import CurrencyInput from 'react-currency-input';
 
 class TrainConfigDialog extends Component {
 
+  // O estado inicial do componente possui campos para armazenar os valores dos parâmetros de treinamento, como o percentual de treinamento, o percentual de testes, a quantidade máxima de treinos e a quantidade de K-fold.
   state = {
     train: 70,
     test: 30,
@@ -18,10 +22,12 @@ class TrainConfigDialog extends Component {
     kfold: 5
   };
 
+  // chamado quando o usuário fecha o diálogo de configuração de treinamento. Ele dispara uma ação Redux para fechar o diálogo.
   onClose = () => {
     this.props.setDialog('trainConfig');
   }
 
+  // renderiza uma mensagem de aviso usando o Redux Toastr para exibir um aviso para o usuário.
   renderWarningMsg = (msg) => {
     this.props.add({
       type: 'warning',
@@ -30,6 +36,7 @@ class TrainConfigDialog extends Component {
     });
   }
 
+  // chamado quando o usuário clica no botão "TREINAR" no diálogo. Ele valida os valores dos parâmetros de treinamento e, se tudo estiver correto, chama a função onSubmit passada como prop. Ele também fecha o diálogo após a conclusão.
   submit = () => {
     const { train, test, generations, kfold } = this.state;
     const { onSubmit } = this.props;
@@ -61,6 +68,8 @@ class TrainConfigDialog extends Component {
     }
   }
 
+
+  // chamado quando há uma alteração em um dos campos de percentual de treinamento ou teste. Ele ajusta os valores para garantir que a soma dos percentuais de treinamento e teste seja 100%.
   handlePercentualChange = (event, maskedValue, floatValue) => {
     let newValue = floatValue;
     let otherInputToUpdate = event.target.name === 'train' ? 'test' : 'train';
@@ -79,6 +88,8 @@ class TrainConfigDialog extends Component {
     });
   }
 
+
+  // chamado quando há uma alteração em um dos campos de quantidade máxima de treinos ou quantidade de K-fold. Ele simplesmente atualiza o estado com o novo valor.
   handleChange = (event, maskedValue, floatValue) => {
     this.setState({ [event.target.name]: floatValue });
   }
@@ -98,6 +109,7 @@ class TrainConfigDialog extends Component {
       return null;
     }
 
+    // O componente renderiza um diálogo que permite ao usuário configurar os parâmetros de treinamento. Ele exibe campos para o percentual de treinamento, percentual de testes, quantidade máxima de treinos e quantidade de K-fold. Também inclui botões para "TREINAR" ou "Cancelar".
     return (
       <Dialog>
         <DialogForm>
@@ -151,6 +163,7 @@ class TrainConfigDialog extends Component {
 
 const mapStateToProps = ({ dialog }) => ({ dialog });
 
+// O componente se conecta ao estado Redux para obter informações relevantes sobre o diálogo (se está aberto ou não) e utiliza ações do Redux para gerenciar o diálogo e as mensagens de aviso.
 export default connect(
   mapStateToProps, { ...DialogActions, ...toastrActions }
 )(TrainConfigDialog);

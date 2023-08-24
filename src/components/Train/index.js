@@ -1,3 +1,5 @@
+// Este é um componente React chamado Train, que parece ser uma parte de um aplicativo de treinamento de modelos de machine learning
+
 import * as moment from 'moment';
 import React, { Component } from 'react';
 import { ConfigContainer } from '../../styles/ConfigContainer';
@@ -34,10 +36,12 @@ class Train extends Component {
     countdown: Date.now()
   };
 
+  // Os dois metodos abaixo extraem o contexto e o nome da fonte de dados da propriedade indicator.datasource, que parece ser a origem dos dados utilizados no treinamento.
   getDataSourceContext = () => this.props.indicator.datasource ? this.props.indicator.datasource.split('/')[0] : null;
 
   getDataSourceName = () => this.props.indicator.datasource ? this.props.indicator.datasource.split('/')[2] : null;
 
+  // didMount e willUnmount são responsáveis por configurar e limpar um intervalo que chama repetidamente o método callTrainStatus a cada 20 segundos (1000 * 20 ms) para obter o status do treinamento. Isso ajuda a atualizar o status do treinamento de forma periódica.
   componentDidMount() {
     const interval = window.setInterval(this.callTrainStatus, 1000 * 20);
 
@@ -49,6 +53,7 @@ class Train extends Component {
     this.props.trainStatusInit();
   }
 
+  // chama a função postTrainStatus para obter o status do treinamento, que é armazenado no estado do componente.
   callTrainStatus = () => {
     const { path } = this.props.pre_processing;
     this.props.postTrainStatus({ path });
@@ -58,6 +63,7 @@ class Train extends Component {
     clearInterval(this.state.interval);
   }
 
+  // calcula a diferença de tempo entre a execução atual e a execução anterior em minutos ou segundos e formata o valor adequadamente.
   getDiffExecutionTime = (item, idx) => {
     let diff = null;
     const { data } = this.props.train_status;
@@ -100,6 +106,7 @@ class Train extends Component {
     return diff;
   }
 
+  // renderiza uma linha da tabela que exibe o status de cada etapa do treinamento, incluindo o ícone do status, o nome da etapa, o status atual, a data de finalização e o tempo de execução.
   renderItem = (item, idx) => (
     <tr key={idx}>
       <FirstItemColumn>{this.getStatusIcon(item)}</FirstItemColumn>
@@ -110,6 +117,7 @@ class Train extends Component {
     </tr>
   )
 
+  // renderiza o ícone do status com base no estado atual do treinamento. Se o status for "Em andamento", é exibido um spinner de carregamento; caso contrário, é exibido um ícone de marca de seleção. 
   getStatusIcon = (item) => {
     if (item.status === 'Em andamento') {
       return (
@@ -185,6 +193,7 @@ class Train extends Component {
     this.props.setScreen(TRAIN_MODEL, TRAIN_MODEL, null);
   }
 
+  // O componente renderiza informações sobre o treinamento, incluindo informações sobre a fonte de dados, quantidade máxima de treinos, quantidade de kfolds, proporção de treinamento e teste. Também exibe botões para visualizar métricas, algoritmos e salvar o modelo. Uma tabela exibe o status de cada etapa do treinamento.
   render() {
     const dataSourceContext = this.getDataSourceContext();
     const dataSourceName = this.getDataSourceName();
@@ -193,6 +202,7 @@ class Train extends Component {
     const { data } = this.props.pre_processing;
     const isFinished = !train.loading && Object.keys(train.data).length > 0;
 
+    // Beforeunload: envolve o conteúdo do Train e exibe um aviso ao usuário se ele tentar fechar ou recarregar a página enquanto o treinamento estiver em andamento.
     return (
       <Beforeunload onBeforeunload={() => "Deseja Continuar?"}>
         <PerfectScrollbar style={{ width: '100%', overflowX: 'auto' }}>
@@ -290,3 +300,6 @@ export default connect(mapStateToProps,
     ...TrainActions, ...TrainMetricActions
   }
 )(Train);
+
+
+//  este componente parece gerenciar a exibição e a interação relacionada ao treinamento de modelos de machine learning, exibindo o status de cada etapa do treinamento, permitindo a visualização de métricas, algoritmos e salvamento de modelos. Também fornece informações sobre as configurações de treinamento, fonte de dados e proporção de treinamento e teste.

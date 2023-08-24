@@ -1,3 +1,5 @@
+// Este componente React é responsável por exibir a página de pré-processamento dos dados antes de iniciar o treinamento de um modelo de aprendizado de máquina. Ele exibe informações sobre os indicadores, suas estatísticas e opções de pré-processamento disponíveis
+
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { ConfigContainer } from '../../styles/ConfigContainer';
@@ -32,6 +34,8 @@ import AlertDialog from '../AlertDialog';
 
 export const ItemColumnWrapper = onClick => ({ ...props }) => <ItemColumn isClickable={true} onClick={onClick} {...props} />
 
+
+// Define uma classe de componente chamada PreProcessing que exibe a página de pré-processamento dos dados.
 class PreProcessing extends Component {
 
   state = {
@@ -40,10 +44,13 @@ class PreProcessing extends Component {
     expandedRow: null
   };
 
+  // Retorna o contexto da fonte de dados (por exemplo, o LMS) da qual os indicadores estão sendo pré-processados.
   getDataSourceContext = () => this.props.indicator.datasource ? this.props.indicator.datasource.split('/')[0] : null;
 
+  // Retorna o nome da fonte de dados da qual os indicadores estão sendo pré-processados.
   getDataSourceName = () => this.props.indicator.datasource ? this.props.indicator.datasource.split('/')[2] : null;
 
+  // É chamado quando uma linha de indicador é clicada, expandindo ou recolhendo detalhes adicionais (gráfico) sobre o indicador.
   handleRowClick(item) {
     const { expandedRow } = this.state;
     const { path } = this.props.pre_processing;
@@ -57,8 +64,10 @@ class PreProcessing extends Component {
     this.setState({ expandedRow: newExpandedRow });
   }
 
+  // Fecha o menu de opções para pré-processamento.
   handleMenuItemClose = () => this.setState({ anchorEl: null });
 
+  // Executa a ação de pré-processamento selecionada (por exemplo, média, mediana, valor mais frequente, constante) com base no indicador selecionado.
   executePreProcessing = ({ strategy, constantValue }) => {
     let newFilter = {};
     const { indicatorSelected } = this.state;
@@ -75,6 +84,7 @@ class PreProcessing extends Component {
     this.props.getPreProcessing(newFilter);
   }
 
+  // Lida com a seleção de uma opção de pré-processamento no menu de opções.
   handleMenuItemClick = (strategy, event) => {
     const { indicatorSelected } = this.state;
 
@@ -87,10 +97,13 @@ class PreProcessing extends Component {
     this.executePreProcessing({ strategy });
   };
 
+  // É chamado quando o ícone de mais (more) é clicado em uma célula, abrindo o menu de opções de pré-processamento.
   handleClickListItem = (item, event) => {
     this.setState({ anchorEl: event.currentTarget, indicatorSelected: item });
   };
 
+
+  // Renderiza o menu de opções de pré-processamento com base no indicador selecionado.
   renderMenuActions = () => {
     let actions = [];
     const { anchorEl, indicatorSelected } = this.state;
@@ -126,6 +139,8 @@ class PreProcessing extends Component {
     )
   }
 
+
+  // Renderiza o ícone de seta para baixo ou para cima com base na linha expandida.
   renderIconDetail = (item) => {
     let icon = <ChevronDown size={20} />;
     const { expandedRow } = this.state;
@@ -137,6 +152,7 @@ class PreProcessing extends Component {
     return <div style={{ display: 'flex', alignItems: 'center' }}>{icon}</div>
   }
 
+  // Renderiza uma linha de indicador na tabela. Também lida com a renderização da linha expandida que contém o gráfico.
   renderItem(item) {
     const { targetSelected } = this.props.indicator;
     const isTarget = targetSelected && targetSelected.value === item.name ? true : false;
@@ -179,6 +195,7 @@ class PreProcessing extends Component {
     return itemRows;
   }
 
+  // Navega para a página de configuração do treinamento de modelo.
   goToTrain = ({ data }) => {
     const { path } = this.props.pre_processing;
     const { targetSelected } = this.props.indicator;
@@ -193,6 +210,8 @@ class PreProcessing extends Component {
     this.props.setScreen(ADD_TRAIN, TRAIN, newData);
   };
 
+
+  // É chamado quando o botão "Configurar treinamento" é clicado. Ele valida se há dados e se não há dados faltantes antes de permitir o usuário prosseguir para a configuração do treinamento.
   submit = () => {
     const { data } = this.props.pre_processing;
     const itemsMissing = data.filter(item => item.missing);
@@ -218,6 +237,7 @@ class PreProcessing extends Component {
     });
   }
 
+  // Verifica se os dados já foram pré-processados. Se já tiverem sido, exibe um alerta perguntando se o usuário deseja continuar, caso contrário, inicia o pré-processamento.
   checkIsPreProcessed = () => {
     const { is_processed } = this.props.pre_processing;
 
@@ -231,6 +251,8 @@ class PreProcessing extends Component {
     this.initPreProcessing();
   }
 
+
+  // Inicia o processo de pré-processamento, excluindo os dados pré-processados existentes e voltando à tela de seleção de indicadores.
   initPreProcessing = () => {
     const { path } = this.props.pre_processing;
 
@@ -238,6 +260,7 @@ class PreProcessing extends Component {
     this.props.setScreen(ADD_TRAIN, INDICATORS);
   }
 
+  // O componente renderiza várias informações, como um botão de voltar, o título da página, informações sobre a fonte de dados, a tabela de indicadores, um ícone de carregamento (se os dados estiverem sendo carregados) e mensagens de erro ou de aviso, se aplicável.
   render() {
     const dataSourceContext = this.getDataSourceContext();
     const dataSourceName = this.getDataSourceName();
@@ -252,11 +275,14 @@ class PreProcessing extends Component {
               text='Voltar para Seleção de indicadores'
             />
           </div>
-
+          
           <Header>
             <h1>Pré-processamento dos dados</h1>
             <div>
-              <Button onClick={this.submit.bind(this)}>Configurar treinamento</Button>
+              <Button onClick={this.submit.bind(this)}>Classificar</Button>
+            </div>
+            <div>
+              <Button onClick={this.submit.bind(this)}>Clusterizar</Button>
             </div>
           </Header>
 

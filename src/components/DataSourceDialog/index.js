@@ -1,3 +1,5 @@
+// Este componente React é um diálogo usado para adicionar uma fonte de dados. Ele lida com a entrada do nome da fonte de dados, bem como o upload de um arquivo CSV associado. 
+
 import React, { Component } from 'react';
 import {
   DialogForm, DialogFormButtonContainer,
@@ -20,11 +22,13 @@ class DataSourceDialog extends Component {
     uploadedFiles: []
   };
 
+  // O estado do componente inclui as variáveis name (nome da fonte de dados) e uploadedFiles (arquivos CSV carregados). O método onClose é usado para fechar o diálogo e limpar o estado.   
   onClose = () => {
     this.props.setDialog('dataSource');
     this.setState({ name: '', uploadedFiles: [] });
   }
 
+  // O estado do componente inclui as variáveis name (nome da fonte de dados) e uploadedFiles (arquivos CSV carregados). usado para cancelar a adição da fonte de dados, excluindo arquivos carregados.
   onCancel = () => {
     const { uploadedFiles } = this.state;
 
@@ -33,6 +37,7 @@ class DataSourceDialog extends Component {
     this.onClose();
   }
 
+  // O método handleDelete é usado para excluir um arquivo carregado.
   handleDelete = async id => {
     await api.delete(`file/${id}`);
 
@@ -41,6 +46,7 @@ class DataSourceDialog extends Component {
     });
   };
 
+  // O método renderWarningMsg é usado para renderizar uma mensagem de aviso. 
   renderWarningMsg = (msg) => {
     this.props.add({
       type: 'warning',
@@ -49,8 +55,11 @@ class DataSourceDialog extends Component {
     });
   }
 
+  // atualizar o estado com o valor do campo de entrada.
   handleChangeInput = e => this.setState({ [e.target.name]: e.target.value });
 
+  // O método submit é usado para enviar a fonte de dados para o servidor.
+  // enviar os dados para a API e adicionar a fonte de dados.
   submit = () => {
     const { name, uploadedFiles } = this.state;
     const fileId = uploadedFiles.map(file => file.id);
@@ -69,6 +78,7 @@ class DataSourceDialog extends Component {
     this.onClose();
   }
 
+  // renderizar a interface do usuário do diálogo. Ele inclui campos de entrada para nome e upload de arquivos CSV, bem como informações sobre o formato do arquivo.
   render() {
     const { name, uploadedFiles } = this.state;
     const { dataSource } = this.props.dialog;
@@ -125,6 +135,7 @@ class DataSourceDialog extends Component {
   }
 }
 
+//  Mapeia o estado da store Redux para as propriedades do componente DataSourceDialog.
 const mapStateToProps = ({ dialog }) => ({ dialog });
 
 export default connect(
@@ -134,3 +145,6 @@ export default connect(
     ...DataSourceActions
   }
 )(DataSourceDialog);
+
+
+// Este diálogo permite que os usuários adicionem uma nova fonte de dados, informando o nome e fazendo o upload de um arquivo CSV associado. Ele também fornece informações sobre o formato do arquivo exigido. O componente lida com a interação do usuário, validação e comunicação com a API.

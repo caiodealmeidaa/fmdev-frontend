@@ -1,3 +1,5 @@
+// Este componente React representa a seleção de indicadores para pré-processamento
+
 import { connect } from 'react-redux';
 import BreadCrumb from '../BreadCrumb';
 import Button from '../../styles/Button';
@@ -20,8 +22,11 @@ import Select from 'react-select';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { PickList } from 'primereact/picklist';
 
+
+// Define uma classe de componente chamada Indicators que é uma página para a seleção de indicadores. Ele lida com a seleção de indicadores alvo, indicadores e outras opções.
 class Indicators extends Component {
 
+  // É chamado quando o componente é montado. Ele é responsável por inicializar os dados necessários, como cursos, disciplinas e semestres, dependendo do contexto da fonte de dados.
   componentDidMount() {
     const dataSourceContext = this.getDataSourceContext();
 
@@ -32,6 +37,7 @@ class Indicators extends Component {
     this.props.indicatorInitFilter();
   }
 
+  // Há vários métodos auxiliares como getDataSourceContext, getDataSourceId, getPickListTemplate, handleChange, refreshFilters, onPickListChange, getValueFromSelect, renderWarningMsg, que tratam várias operações, como obtenção de contexto e ID da fonte de dados, renderização de listas de seleção, tratamento de alterações, etc.
   getDataSourceContext = () => this.props.indicator.datasource ? this.props.indicator.datasource.split('/')[0] : null;
 
   getDataSourceId = () => this.props.indicator.datasource ? this.props.indicator.datasource.split('/')[1] : null;
@@ -125,6 +131,7 @@ class Indicators extends Component {
     return items.map(item => item.value);
   }
 
+  // O componente renderiza várias partes da interface, incluindo um "breadcrumb" para voltar à tela de seleção de fontes de dados, seleção de cursos, disciplinas e turmas (se for um contexto de fonte de dados LMS), seleção do indicador alvo e a lista de seleção de indicadores.
   render() {
     const { course, subject, semester, indicator } = this.props;
     const { source, indicators, targetSelected, courseSelected,
@@ -240,3 +247,6 @@ export default connect(
     ...PreProcessingActions
   }
 )(Indicators);
+
+
+// Este componente é responsável por permitir ao usuário selecionar indicadores alvo e indicadores para a etapa de pré-processamento. Também lida com a seleção de cursos, disciplinas e semestres, dependendo do contexto da fonte de dados (LMS). A interface é projetada para permitir ao usuário escolher indicadores relevantes e prosseguir para a etapa de pré-processamento.

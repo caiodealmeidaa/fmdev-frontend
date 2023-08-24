@@ -1,3 +1,5 @@
+// Este componente React é responsável por exibir um diálogo de configuração de integração com um sistema LMS (Learning Management System) específico (por exemplo, o Moodle). 
+
 import React, { Component } from 'react';
 import {
   DialogForm, DialogFormButtonContainer,
@@ -18,12 +20,15 @@ const versions = [
   { value: '3.6.0', label: '3.6.0' }
 ];
 
+// Define uma classe de componente chamada MoodleConfigDialog que é responsável por exibir o diálogo de configuração de integração com o LMS.
 class MoodleConfigDialog extends Component {
 
+  //  É chamado quando o botão de fechar é clicado, e fecha o diálogo de configuração.
   onClose = () => {
     this.props.setDialog('moodle');
   }
 
+  // É chamado quando o botão "Salvar" é clicado, e realiza a validação dos campos de entrada (URL, chave de API e versão LMS) e, se tudo estiver correto, envia os dados de configuração para a ação Redux correspondente.
   submit() {
     const { id, name, url, token, version } = this.props.dialog.data;
 
@@ -46,6 +51,7 @@ class MoodleConfigDialog extends Component {
     this.props.setDialog(name);
   }
 
+  // Renderiza uma mensagem de aviso utilizando o sistema de notificações do Redux (react-redux-toastr).
   renderWarningMsg = (msg) => {
     this.props.add({
       type: 'warning',
@@ -54,10 +60,13 @@ class MoodleConfigDialog extends Component {
     });
   }
 
+  // Atualiza o estado do diálogo com os valores dos campos de entrada.
   handleChangeInput = e => this.props.setDialogData({ [e.target.name]: e.target.value });
 
+  // Atualiza o estado do diálogo com o valor selecionado de um campo de seleção (nesse caso, a versão LMS).
   handleChange = (item, name) => this.props.setDialogData({ [name]: item });
 
+  // O componente renderiza o diálogo de configuração de integração. Ele inclui campos de entrada para a URL e a chave de API do LMS, bem como um campo de seleção para a versão do LMS. Os valores para a versão são obtidos do array versions. O diálogo também possui botões "Salvar" e "Cancelar" para confirmar ou cancelar a configuração.
   render() {
     const { url, token, version, description } = this.props.dialog.data || {};
     const { moodle } = this.props.dialog;
@@ -109,3 +118,6 @@ export default connect(
     ...LmsActions
   }
 )(MoodleConfigDialog);
+
+
+// Este componente é responsável por permitir ao usuário configurar a integração com um sistema LMS específico (Moodle) fornecendo a URL, chave de API e versão. A interface é projetada para facilitar a configuração dessas informações e prosseguir com a integração.

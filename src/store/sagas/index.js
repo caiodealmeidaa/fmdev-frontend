@@ -1,3 +1,7 @@
+// Esse trecho de código é o módulo principal das sagas Redux que coordena todas as ações assíncronas e observa determinados tipos de ação para executar as sagas apropriadas. 
+
+
+// São importadas todas as dependências necessárias, incluindo funções do Redux Saga (all, takeLatest) e todos os tipos de ação definidos em diferentes módulos de ducks. Além disso, as sagas específicas de cada módulo também são importadas.
 import { all, takeLatest } from 'redux-saga/effects';
 import { Types as LmsTypes } from '../ducks/lms';
 import { Types as AuthTypes } from '../ducks/auth';
@@ -39,8 +43,13 @@ import { getPhenomenon } from './phenomenon';
 import { getStudents } from './student';
 import { getPeriods } from './period';
 
+
+// Esta é a função geradora que coordena todas as sagas.
 export default function* rootSaga() {
   return yield all([
+    // takeLatest para Cada Tipo de Ação: O bloco yield all([...]) contém várias chamadas takeLatest, uma para cada tipo de ação definido nos módulos de ducks. A função takeLatest observa as ações correspondentes e executa a saga apropriada quando essa ação é disparada.
+
+    //Cada chamada takeLatest especifica um tipo de ação e a saga associada a ser executada quando essa ação for disparada. Isso garante que a saga seja executada apenas uma vez para cada ação, evitando possíveis duplicações de execução.
     takeLatest(ChartTypes.GET_CHART, getChart),
     takeLatest(DownloadTypes.GET_DOWNLOAD, getDownload),
     takeLatest(ModelCopyTypes.GET_MODEL_COPY, getModelCopy),
@@ -71,3 +80,7 @@ export default function* rootSaga() {
     takeLatest(PeriodTypes.GET_PERIODS, getPeriods),
   ])
 }
+
+// Cada saga é associada a um tipo de ação específico. Quando uma ação do tipo correspondente é despachada, a saga apropriada é chamada para lidar com a lógica assíncrona relacionada àquela ação. Isso permite a separação clara das preocupações em seu aplicativo Redux, mantendo as operações assíncronas fora dos reducers e centralizando-as nas sagas.
+
+// Em resumo, esse módulo é o ponto de entrada para todas as suas sagas Redux. Ele coordena as ações assíncronas disparadas em sua aplicação, garantindo que as sagas apropriadas sejam executadas para lidar com as operações assíncronas de maneira organizada e eficiente.

@@ -1,3 +1,5 @@
+// Este componente React está envolvido em muitas atividades, incluindo renderização condicional, manipulação de eventos e exibição de dados da fonte de dados.
+
 import React, { Component } from 'react';
 import { CardContainer } from './styles';
 import { Creators as DialogActions } from '../../store/ducks/dialog';
@@ -34,11 +36,13 @@ const availableLms = { moodle: true };
 
 class DataSource extends Component {
 
+  // O estado do componente inclui uma variável selectedItem e chipSelected para controlar qual tipo de dados está sendo exibido.
   state = {
     selectedItem: null,
     chipSelected: LMS
   }
 
+  // usado para carregar os dados da fonte de dados ao montar o componente.
   componentWillMount() {
     this.props.getDataSource();
   }
@@ -54,6 +58,7 @@ class DataSource extends Component {
     })
   }
 
+//  métodos de renderização são definidos para renderizar as diferentes opções de fontes de dados (LMS e CSV).
   renderCardLMS = (item, idx) => (
     <Card className='lms-card' key={idx} style={{ opacity: availableLms[item.name] ? 1 : .3 }}>
       <CardActionArea>
@@ -103,6 +108,8 @@ class DataSource extends Component {
     </Card>
   )
 
+
+// Os métodos openDialogConfig, handleMsgDelete, handleDelete, goToIndicators, setChip e addDataSource são usados para lidar com eventos de clique e manipulação de dados.
   handleMsgDelete = (item, event) => {
     this.setState({ selectedItem: item });
 
@@ -131,6 +138,7 @@ class DataSource extends Component {
 
   setChip = (value, event) => this.setState({ chipSelected: value });
 
+  // usado para renderizar as opções de seleção de fonte de dados.
   renderDatasetOptions = () => {
     const { chipSelected } = this.state;
 
@@ -158,6 +166,7 @@ class DataSource extends Component {
 
   addDataSource = () => this.props.setDialog('dataSource');
 
+  // usado para renderizar a interface do usuário. Ele inclui elementos condicionais para renderizar diferentes tipos de fontes de dados com base na opção selecionada.
   render() {
     const { chipSelected } = this.state;
     const { lms, data_source } = this.props;
@@ -203,8 +212,10 @@ class DataSource extends Component {
   }
 }
 
+//  Mapeia o estado da store Redux para as propriedades do componente DataSource.
 const mapStateToProps = ({ lms, data_source }) => ({ lms, data_source });
 
+// Exporta o componente DataSource conectado à store Redux usando a função connect.
 export default connect(
   mapStateToProps, {
   ...DialogActions, ...LmsActions,
@@ -212,3 +223,5 @@ export default connect(
   ...DataSourceActions
 }
 )(DataSource);
+
+// Este componente representa uma seção da interface de usuário onde os usuários podem ver, adicionar e gerenciar fontes de dados, como ambientes LMS e arquivos CSV. Ele lida com a renderização de diferentes tipos de fontes de dados, permite a edição de configurações, exclusão de fontes de dados e navegação para outras seções.
